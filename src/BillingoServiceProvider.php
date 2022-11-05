@@ -13,7 +13,13 @@ class BillingoServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton('Billingo', function ($app) {
+            return new BillingoApi(
+                config('billingo.endpoint'),
+                config('billingo.apikey'),
+                config('billingo.blockId')
+            );
+        });
     }
 
     /**
@@ -23,7 +29,6 @@ class BillingoServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        die('asd');
         $this->publishes([
             __DIR__ . '/../config/billingo.php' => config_path('billingo.php'),
         ], 'billingo-config');

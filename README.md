@@ -28,3 +28,11 @@ A projekt .env állományába fel kell venni a következő beállitásokat:
 `BILLINGO_BLOCKID` - a számlázáshoz használatos bizonylattömb API ID-ja
 
 ### Egyéb rendszeren
+
+## Használat
+
+### Laravel
+
+```php
+    app()->get('Billingo')->getDocuments();
+```
