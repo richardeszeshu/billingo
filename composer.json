@@ -1,0 +1,28 @@
+{
+    "name": "richardeszeshu/billingo",
+    "description": "Billingo API integracio",
+    "version": "1.0.0-a",
+    "type": "library",
+    "keywords:": [
+        "billing",
+        "billingo",
+        "api",
+        "integration"
+    ],
+    "homepage": "https://github.com/richardeszeshu/billingo",
+    "license": "CC-BY-SA-4.0",
+    "authors": [
+        {
+            "name": "Richard Eszes",
+            "email": "richard.eszes@outlook.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/richardeszeshu/billingo/issues"
+    },
+    "require": {
+        "guzzlehttp/guzzle": "^7.5"
+    },
+    "minimum-stability": "dev"
+}
