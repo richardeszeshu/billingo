@@ -24,5 +24,17 @@
     "require": {
         "guzzlehttp/guzzle": "^7.5"
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "RichardEszes\\Billingo\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "RichardEszes\\Billingo\\BillingoServiceProvider"
+            ]
+        }
+    }
 }
