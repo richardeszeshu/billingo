@@ -30,7 +30,7 @@ A projekt .env állományába fel kell venni a következő beállitásokat:
 A Billingo API hivásokat megvalósitó osztály automatikusan elérhető a containerből Billingo néven. A service provider automatikusan inicializálja a megadott credential-ökkel, igy egyből használhatóak annak függvényei:
 
 ```php
-    app()->get('Billingo')->getDocuments();
+app()->get('Billingo')->getDocuments();
 ```
 
 ### Egyéb rendszeren
@@ -38,60 +38,79 @@ A Billingo API hivásokat megvalósitó osztály automatikusan elérhető a cont
 Laraveltől eltérő keretrendszer használata esetén a `RichardEszes\Billingo\BillingoApi` osztály példányositandó.
 
 ```php
-    $billingoApi = new RichardEszes\Billingo\BillingoApi($baseUrl, $apiKey, $blockId);
+$billingoApi = new RichardEszes\Billingo\BillingoApi($baseUrl, $apiKey, $blockId);
 ```
 
 Ezután használata a továbbiakban leirtak szerint történik, csupán a példában használt `app()->get('Billingo')` helyett ez a `$billingoApi` példányunk használandó:
 
 ```php
-    $partners = $billingoApi->listPartners($params);
+$partners = $billingoApi->partner()->list($params);
 ```
 
 ## Használat
 
-### Partnerek
+Jelen verzióban az alábbi entitások kezelhetőek:
 
-#### Listázás
+* partner
+* product
+
+Az entitások kezelése megegyezik, csupán a modellek attribútumaiban van eltérés.
+
+A továbbiakban a példák a partnerek kezelését mutatja be, de ezek teljesen azonos módon kezelhetőek, csupán az entitás nevét kell kicserélni, pl:
 
 ```php
-    $partners = app()->get('Billingo')->listPartners($params);
+$partners = app()->get('Billingo')->partner($partner)->create();
 ```
 
-#### Létrehozás
+helyett product esetén:
 
 ```php
-    $partner = new RichardEszes\Billingo\Models\Partner();
-    $partner->setName("John Doe")->setDiscount("percent", 10);
-    $partner->setAddress("HU", "1024", "Budapest", "Kis köz 17.");
-    
-    $partner = app()->get('Billingo')->createPartner($partner);
-    // $partner->id tartalmazza a partner Billingo-s ID-ját
+$products = app()->get('Billingo')->product($product)->create();
 ```
 
-#### Lekérdezés
+A `list()` és a `getById()` függvények kivételével az összes műveletnél kötelező átadni az entitást.
+
+### Listázás
 
 ```php
-    $partner = app()->get('Billingo')->getPartner($partnerId);
-    // $partner egy Partner object, mely tartalmaz minden elérhető adatot
+$partners = app()->get('Billingo')->partner()->list($params);
 ```
 
-#### Frissités
+### Létrehozás
 
 ```php
-    $partner = new RichardEszes\Billingo\Models\Partner();
-    $partner->setId($ownPartnerModel->billingoId); // Billingo ID beállitása
-    $partner->setName("John Doe")->setDiscount("percent", 10);
-    $partner->setAddress("HU", "1024", "Budapest", "Kis köz 17.");
-    
-    $partner = app()->get('Billingo')->updatePartner($partner);
-    // $partner egy Partner object, mely tartalmaz minden friss adatot
+$partner = new RichardEszes\Billingo\Models\Partner();
+$partner->setName("John Doe")->setDiscount("percent", 10);
+$partner->setAddress("HU", "1024", "Budapest", "Kis köz 17.");
+
+$partner = app()->get('Billingo')->partner($partner)->create();
+// $partner->id tartalmazza a partner Billingo-s ID-ját
 ```
 
-#### Törlés
+### Lekérdezés
 
 ```php
-    $partner = new RichardEszes\Billingo\Models\Partner();
-    $partner->setId($ownPartnerModel->billingoId); // Billingo ID beállitása
-    
-    $success = app()->get('Billingo')->deletePartner($partner);
+$partner = app()->get('Billingo')->partner()->getById($partnerId);
+// $partner egy Partner object, mely tartalmaz minden elérhető adatot
+```
+
+### Frissités
+
+```php
+$partner = new RichardEszes\Billingo\Models\Partner();
+$partner->setId($ownPartnerModel->billingoId); // Billingo ID beállitása
+$partner->setName("John Doe")->setDiscount("percent", 10);
+$partner->setAddress("HU", "1024", "Budapest", "Kis köz 17.");
+
+$partner = app()->get('Billingo')->partner($partner)->update();
+// $partner egy Partner object, mely tartalmaz minden friss adatot
+```
+
+### Törlés
+
+```php
+$partner = new RichardEszes\Billingo\Models\Partner();
+$partner->setId($ownPartnerModel->billingoId); // Billingo ID beállitása
+
+$success = app()->get('Billingo')->partner($partner)->delete();
 ```

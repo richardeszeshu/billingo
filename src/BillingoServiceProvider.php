@@ -15,7 +15,7 @@ class BillingoServiceProvider extends ServiceProvider
     {
         $this->app->singleton('Billingo', function ($app) {
             return new BillingoApi(
-                config('billingo.endpoint'),
+                config('billingo.baseUrl'),
                 config('billingo.apikey'),
                 config('billingo.blockId')
             );

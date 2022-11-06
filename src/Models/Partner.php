@@ -2,12 +2,6 @@
 
 namespace RichardEszes\Billingo\Models;
 
-use RichardEszes\Billingo\Constants\Country;
-use RichardEszes\Billingo\Constants\Currency;
-use RichardEszes\Billingo\Constants\Language;
-use RichardEszes\Billingo\Constants\PaymentMethod;
-use RichardEszes\Billingo\Constants\TaxType;
-
 class Partner extends AbstractModel
 {
 
@@ -111,7 +105,7 @@ class Partner extends AbstractModel
      */
     protected function setAddress(array $address): self
     {
-        if (!in_array($address['country_code'], Country::VALUES)) {
+        if (!in_array($address['country_code'], config('billingo.countryCodes'))) {
             throw new \Exception("Invalid country code");
         }
 
@@ -128,7 +122,6 @@ class Partner extends AbstractModel
     /**
      * Set address of partner.
      * 
-     * @see RichardEszes\Constants\Country::VALUES
      * @param string $countryCode
      * @param string $postCode
      * @param string $city
@@ -138,7 +131,7 @@ class Partner extends AbstractModel
      */
     public function setAddressFields(string $countryCode, string $postCode, string $city, string $address): self
     {
-        if (!in_array($countryCode, Country::VALUES)) {
+        if (!in_array($countryCode, config('billingo.countryCodes'))) {
             throw new \Exception("Invalid country code");
         }
 
@@ -301,14 +294,13 @@ class Partner extends AbstractModel
     /**
      * Set tax type of partner.
      * 
-     * @see RichardEszes\Constants\TaxType::VALUES
      * @param string $taxType
      * @return self
      * @throws Exception
      */
     public function setTaxType(string $taxType): self
     {
-        if ($taxType !== "" && !in_array($taxType, TaxType::VALUES)) {
+        if ($taxType !== "" && !in_array($taxType, config('billingo.taxTypes'))) {
             throw new \Exception("Invalid tax type");
         }
 
@@ -333,14 +325,13 @@ class Partner extends AbstractModel
     /**
      * Set payment method of partner.
      * 
-     * @see RichardEszes\Constants\PaymentMethod::VALUES
      * @param string $method
      * @return self
      * @throws Exception
      */
     public function setPaymentMethod(string $method): self
     {
-        if (!in_array($method, PaymentMethod::VALUES)) {
+        if (!in_array($method, config('billingo.paymentMethods'))) {
             throw new \Exception("Invalid payment method");
         }
 
@@ -383,14 +374,13 @@ class Partner extends AbstractModel
     /**
      * Set document currency of partner.
      * 
-     * @see RichardEszes\Constants\Currency::VALUES
      * @param string $currency
      * @return self
      * @throws Exception
      */
     public function setDocumentCurrency(string $currency): self
     {
-        if (!in_array($currency, Currency::VALUES)) {
+        if (!in_array($currency, config('billingo.currencies'))) {
             throw new \Exception("Invalid currency");
         }
 
@@ -402,13 +392,12 @@ class Partner extends AbstractModel
     /**
      * Set phone of partner.
      * 
-     * @see RichardEszes\Constants\Language::VALUES
      * @param string $phone
      * @return self
      */
     public function setTemplateLanguageCode(string $code): self
     {
-        if (!in_array($code, Language::VALUES)) {
+        if (!in_array($code, config('billingo.languages'))) {
             throw new \Exception("Invalid language");
         }
 
