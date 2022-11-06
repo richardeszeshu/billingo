@@ -7,8 +7,9 @@ use RichardEszes\Billingo\Exceptions\BillingoException;
 use RichardEszes\Billingo\Exceptions\DoesntHaveAccessToResourceException;
 use RichardEszes\Billingo\Exceptions\DoesntHaveSubscriptionException;
 use RichardEszes\Billingo\Exceptions\InternalServerErrorException;
+use RichardEszes\Billingo\Exceptions\MalformedException;
 use RichardEszes\Billingo\Exceptions\NonExistentResourceException;
-use RichardEszes\Billingo\Exceptions\TooManyRequestException;
+use RichardEszes\Billingo\Exceptions\TooManyRequestsException;
 use RichardEszes\Billingo\Exceptions\UnauthorizedException;
 use RichardEszes\Billingo\Exceptions\ValidationErrorException;
 use RichardEszes\Billingo\Models\Partner;
@@ -38,6 +39,19 @@ class BillingoApi
         return json_decode($response->getBody()->getContents());
     }
 
+    /**
+     * Search and list partners based on the given parameters.
+     * 
+     * @param array $params
+     * @return array
+     * @throws MalformedException
+     * @throws UnauthorizedException
+     * @throws DoesntHaveSubscriptionException
+     * @throws ValidationErrorException
+     * @throws TooManyRequestsException
+     * @throws InternalServerErrorException
+     * @throws BillingoException
+     */
     public function listPartners($params = []): array
     {
         $client = new Client();
@@ -65,7 +79,7 @@ class BillingoApi
                     throw new ValidationErrorException();
                     break;
                 case 429:
-                    throw new TooManyRequestException();
+                    throw new TooManyRequestsException();
                     break;
                 case 500:
                     throw new InternalServerErrorException();
@@ -80,13 +94,27 @@ class BillingoApi
         $partners = json_decode($response->getBody()->getContents())->data;
         foreach ($partners as $row) {
             $partner = new Partner();
-            $partner->loadFromResponse($row);
+            $partner->hydrate($row);
             $result[] = $partner;
         }
 
         return $result;
     }
 
+    /**
+     * Create partner.
+     * 
+     * @param Partner $partner
+     * @return Partner
+     * @throws MalformedException
+     * @throws UnauthorizedException
+     * @throws DoesntHaveSubscriptionException
+     * @throws DoesntHaveAccessToResourceException
+     * @throws ValidationErrorException
+     * @throws TooManyRequestsException
+     * @throws InternalServerErrorException
+     * @throws BillingoException
+     */
     public function createPartner(Partner $partner): Partner
     {
         $client = new Client();
@@ -96,7 +124,7 @@ class BillingoApi
                 'X-API-KEY' => $this->apiKey,
                 'Content-type' => 'application/json'
             ],
-            'body' => json_encode($partner->toArray())
+            'body' => json_encode($partner->toRequest())
         ]);
 
         $statusCode = $response->getStatusCode();
@@ -118,7 +146,7 @@ class BillingoApi
                     throw new ValidationErrorException();
                     break;
                 case 429:
-                    throw new TooManyRequestException();
+                    throw new TooManyRequestsException();
                     break;
                 case 500:
                     throw new InternalServerErrorException();
@@ -129,12 +157,25 @@ class BillingoApi
             }
         }
 
-        $result = new Partner();
-        $result->loadFromResponse(json_decode($response->getBody()->getContents()));
+        $result = new Partner($response);
 
         return $result;
     }
 
+    /**
+     * Get a partner.
+     * 
+     * @param Partner $partner
+     * @return Partner
+     * @throws MalformedException
+     * @throws UnauthorizedException
+     * @throws DoesntHaveSubscriptionException
+     * @throws NonExistentResourceException
+     * @throws ValidationErrorException
+     * @throws TooManyRequestsException
+     * @throws InternalServerErrorException
+     * @throws BillingoException
+     */
     public function getPartner(int $partnerId): Partner
     {
         $client = new Client();
@@ -164,7 +205,7 @@ class BillingoApi
                     throw new ValidationErrorException();
                     break;
                 case 429:
-                    throw new TooManyRequestException();
+                    throw new TooManyRequestsException();
                     break;
                 case 500:
                     throw new InternalServerErrorException();
@@ -175,12 +216,26 @@ class BillingoApi
             }
         }
 
-        $result = new Partner();
-        $result->loadFromResponse(json_decode($response->getBody()->getContents()));
+        $result = new Partner($response);
 
         return $result;
     }
 
+    /**
+     * Update a partner.
+     * 
+     * @param Partner $partner
+     * @return Partner
+     * @throws MalformedException
+     * @throws UnauthorizedException
+     * @throws DoesntHaveSubscriptionException
+     * @throws DoesntHaveAccessToResourceException
+     * @throws NonExistentResourceException
+     * @throws ValidationErrorException
+     * @throws TooManyRequestsException
+     * @throws InternalServerErrorException
+     * @throws BillingoException
+     */
     public function updatePartner(Partner $partner): Partner
     {
         $client = new Client();
@@ -190,7 +245,7 @@ class BillingoApi
                 'X-API-KEY' => $this->apiKey,
                 'Content-type' => 'application/json'
             ],
-            'body' => json_encode($partner->toArray())
+            'body' => json_encode($partner->toRequest())
         ]);
 
         $statusCode = $response->getStatusCode();
@@ -215,7 +270,7 @@ class BillingoApi
                     throw new ValidationErrorException();
                     break;
                 case 429:
-                    throw new TooManyRequestException();
+                    throw new TooManyRequestsException();
                     break;
                 case 500:
                     throw new InternalServerErrorException();
@@ -226,12 +281,25 @@ class BillingoApi
             }
         }
 
-        $result = new Partner();
-        $result->loadFromResponse(json_decode($response->getBody()->getContents()));
+        $result = new Partner($response);
 
         return $result;
     }
 
+    /**
+     * Delete a partner.
+     * 
+     * @param Partner $partner
+     * @return bool
+     * @throws MalformedException
+     * @throws UnauthorizedException
+     * @throws DoesntHaveSubscriptionException
+     * @throws DoesntHaveAccessToResourceException
+     * @throws NonExistentResourceException
+     * @throws TooManyRequestsException
+     * @throws InternalServerErrorException
+     * @throws BillingoException
+     */
     public function deletePartner(Partner $partner): bool
     {
         $client = new Client();
@@ -261,7 +329,7 @@ class BillingoApi
                     throw new NonExistentResourceException();
                     break;
                 case 429:
-                    throw new TooManyRequestException();
+                    throw new TooManyRequestsException();
                     break;
                 case 500:
                     throw new InternalServerErrorException();
