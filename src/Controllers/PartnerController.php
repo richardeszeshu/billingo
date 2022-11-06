@@ -3,6 +3,7 @@
 namespace RichardEszes\Billingo\Controllers;
 
 use GuzzleHttp\Client;
+use RichardEszes\Billingo\BillingoApi;
 use RichardEszes\Billingo\Exceptions\BillingoException;
 use RichardEszes\Billingo\Exceptions\DoesntHaveAccessToResourceException;
 use RichardEszes\Billingo\Exceptions\DoesntHaveSubscriptionException;
@@ -35,7 +36,7 @@ class PartnerController extends AbstractController
     public function list($params = []): array
     {
         $response = $this->client->get(
-            '/v3/partners',
+            '/' . BillingoApi::API_VERSION . '/partners',
             [
                 'form_params' => $params
             ]
@@ -100,7 +101,7 @@ class PartnerController extends AbstractController
         }
 
         $response = $this->client->post(
-            '/v3/partners', 
+            '/' . BillingoApi::API_VERSION . '/partners', 
             [
                 'body' => json_encode($this->partner->toRequest())
             ]
@@ -181,7 +182,7 @@ class PartnerController extends AbstractController
      */
     public function getById(int $partnerId): Partner
     {
-        $response = $this->client->get('/v3/partners/' . $partnerId);
+        $response = $this->client->get('/' . BillingoApi::API_VERSION . '/partners/' . $partnerId);
 
         $statusCode = $response->getStatusCode();
         if ($statusCode !== 200) {
@@ -240,7 +241,7 @@ class PartnerController extends AbstractController
         }
 
         $response = $this->client->put(
-            '/v3/partners/' . $this->partner->id, 
+            '/' . BillingoApi::API_VERSION . '/partners/' . $this->partner->id, 
             [
                 'body' => json_encode($this->partner->toRequest())
             ]
@@ -304,7 +305,7 @@ class PartnerController extends AbstractController
             throw new UndefinedEntityException();
         }
 
-        $response = $this->client->delete('/v3/partners/' . $this->partner->id);
+        $response = $this->client->delete('/' . BillingoApi::API_VERSION . '/partners/' . $this->partner->id);
 
         $statusCode = $response->getStatusCode();
         if ($statusCode !== 204) {

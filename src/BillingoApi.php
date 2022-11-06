@@ -10,52 +10,63 @@ use RichardEszes\Billingo\Models\Product;
 
 class BillingoApi
 {
-    public function __construct(
-        public string $baseUrl,
-        public string $apiKey,
-        public int $blockId){}
+    /**
+     * @var Client
+     */
+    protected $client;
 
-    public function partner(null|Partner $partner = null)
-    {
-        $client = new Client([
-            'base_uri' => $this->baseUrl,
+    /**
+     * @var int
+     */
+    protected $blockId;
+
+    /**
+     * Version of current API
+     */
+    const API_VERSION = 'v3';
+
+    /**
+     * Create a Billingo API wrapper.
+     * 
+     * @param string $baseUrl
+     * @param string $apiKey
+     * @param int $blockId
+     */
+    public function __construct(string $baseUrl, string $apiKey, int $blockId) {
+        $this->client = new Client([
+            'base_uri' => $baseUrl,
             'headers' => [
-                'X-API-KEY' => $this->apiKey
+                'X-API-KEY' => $apiKey
             ]
         ]);
-        $controller = new PartnerController($client, $partner);
-        
-        return $controller;
+
+        $this->blockId = $blockId;
     }
 
-    public function product(null|Product $product = null)
+    /**
+     * Get handler of partners.
+     * 
+     * @param null|Partner $partner
+     * @return PartnerController
+     */
+    public function partner(null|Partner $partner = null)
     {
-        $client = new Client([
-            'base_uri' => $this->baseUrl,
-            'headers' => [
-                'X-API-KEY' => $this->apiKey
-            ]
-        ]);
-        $controller = new ProductController($client, $product);
+        $controller = new PartnerController($this->client, $partner);
         
         return $controller;
     }
 
     /**
-     * @param array $params
-     * @return object
+     * Get handler of products.
+     * 
+     * @param null|Product $product
+     * @return ProductController
      */
-    public function getDocuments($params = []): object
+    public function product(null|Product $product = null)
     {
-        $client = new Client();
-
-        $response = $client->get($this->endpoint . '/documents', [
-            'headers' => [
-                'X-API-KEY' => $this->apiKey
-            ],
-            'form_params' => $params
-        ]);
-
-        return json_decode($response->getBody()->getContents());
+        $controller = new ProductController($this->client, $product);
+        
+        return $controller;
     }
+
 }

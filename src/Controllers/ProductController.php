@@ -3,6 +3,7 @@
 namespace RichardEszes\Billingo\Controllers;
 
 use GuzzleHttp\Client;
+use RichardEszes\Billingo\BillingoApi;
 use RichardEszes\Billingo\Exceptions\BillingoException;
 use RichardEszes\Billingo\Exceptions\DoesntHaveAccessToResourceException;
 use RichardEszes\Billingo\Exceptions\DoesntHaveSubscriptionException;
@@ -35,7 +36,7 @@ class ProductController extends AbstractController
     public function list($params = []): array
     {
         $response = $this->client->get(
-            '/v3/products', 
+            '/' . BillingoApi::API_VERSION . '/products', 
             [
                 'form_params' => $params
             ]
@@ -100,7 +101,7 @@ class ProductController extends AbstractController
         }
 
         $response = $this->client->post(
-            '/v3/products', 
+            '/' . BillingoApi::API_VERSION . '/products', 
             [
                 'body' => json_encode($this->product->toRequest())
             ]
@@ -180,7 +181,7 @@ class ProductController extends AbstractController
      */
     public function getById(int $productId): Product
     {
-        $response = $this->client->get('/products/' . $productId);
+        $response = $this->client->get('/' . BillingoApi::API_VERSION . '/products/' . $productId);
 
         $statusCode = $response->getStatusCode();
         if ($statusCode !== 200) {
@@ -239,7 +240,7 @@ class ProductController extends AbstractController
         }
 
         $response = $this->client->put(
-            '/v3/products/' . $this->product->id,
+            '/' . BillingoApi::API_VERSION . '/products/' . $this->product->id,
             [
                 'body' => json_encode($this->product->toRequest())
             ]
@@ -303,7 +304,7 @@ class ProductController extends AbstractController
             throw new UndefinedEntityException();
         }
 
-        $response = $this->client->delete('/v3/products/' . $this->product->id);
+        $response = $this->client->delete('/' . BillingoApi::API_VERSION . '/products/' . $this->product->id);
 
         $statusCode = $response->getStatusCode();
         if ($statusCode !== 204) {
