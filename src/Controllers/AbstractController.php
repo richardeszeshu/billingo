@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RichardEszes\Billingo\Controllers;
 
 use RichardEszes\Billingo\Models\AbstractModel;

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RichardEszes\Billingo\Models;
 
 class Partner extends AbstractModel

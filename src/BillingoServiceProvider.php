@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RichardEszes\Billingo;
 
 use Illuminate\Support\ServiceProvider;
@@ -17,7 +19,7 @@ class BillingoServiceProvider extends ServiceProvider
             return new BillingoApi(
                 config('billingo.baseUrl'),
                 config('billingo.apikey'),
-                config('billingo.blockId')
+                (int) config('billingo.blockId')
             );
         });
     }

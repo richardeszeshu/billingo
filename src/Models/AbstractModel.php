@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace RichardEszes\Billingo\Models;
 
 use GuzzleHttp\Psr7\Response;
